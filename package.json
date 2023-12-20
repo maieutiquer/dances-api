@@ -10,11 +10,13 @@
   },
   "scripts": {
     "build": "nest build --builder swc",
+    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start --builder swc",
     "start:dev": "nest start --watch --builder swc",
     "start:debug": "nest start --debug --watch --builder swc",
     "start:prod": "node dist/main",
+    "lint:check": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
