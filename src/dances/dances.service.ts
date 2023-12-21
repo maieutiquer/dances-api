@@ -1,26 +1,37 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateDanceDto } from './dto/create-dance.dto';
 import { UpdateDanceDto } from './dto/update-dance.dto';
+import { Dance } from './entities/dance.entity';
 
 @Injectable()
 export class DancesService {
+  constructor(
+    @InjectRepository(Dance)
+    private dancesRepository: Repository<Dance>,
+  ) {}
+
   create(createDanceDto: CreateDanceDto) {
-    return 'This action adds a new dance';
+    console.log(createDanceDto);
+    // return 'This action adds a new dance';
+    return this.dancesRepository.insert(createDanceDto);
   }
 
-  findAll() {
-    return `This action returns all dances`;
+  findAll(): Promise<Dance[]> {
+    return this.dancesRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} dance`;
+  findOne(id: number): Promise<Dance | null> {
+    return this.dancesRepository.findOneBy({ id });
   }
 
   update(id: number, updateDanceDto: UpdateDanceDto) {
+    console.log(updateDanceDto);
     return `This action updates a #${id} dance`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} dance`;
+  async remove(id: number): Promise<void> {
+    await this.dancesRepository.delete(id);
   }
 }
