@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { createReadStream } from 'fs';
+import { parse } from 'papaparse';
 import { CreateDanceDto } from './dto/create-dance.dto';
 import { UpdateDanceDto } from './dto/update-dance.dto';
 import { Dance } from './entities/dance.entity';
@@ -33,5 +35,31 @@ export class DancesService {
 
   async remove(id: number): Promise<void> {
     await this.dancesRepository.delete(id);
+  }
+
+  async importCsv(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const file = createReadStream('./data/dances.csv');
+
+      parse(file, {
+        header: true,
+        complete: async (result) => {
+          const data = result.data;
+          const dances = data.map(
+            ({
+              ['Име']: name,
+              ['Област (етнографска/фолклорна)']: region,
+            }) => ({ name, region }),
+          );
+          // console.log(dances);
+
+          await this.dancesRepository.save(dances);
+          resolve();
+        },
+        error: (error) => {
+          reject(error);
+        },
+      });
+    });
   }
 }

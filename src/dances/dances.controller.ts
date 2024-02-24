@@ -20,6 +20,12 @@ export class DancesController {
     return this.dancesService.create(createDanceDto);
   }
 
+  @Post('csv')
+  async csv() {
+    await this.dancesService.importCsv();
+    return { message: 'CSV data imported successfully' };
+  }
+
   @Get()
   findAll() {
     return this.dancesService.findAll();
