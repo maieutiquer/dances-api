@@ -53,6 +53,10 @@ export class DancesService {
           );
           // console.log(dances);
 
+          await this.dancesRepository.clear();
+          await this.dancesRepository.query(
+            'ALTER SEQUENCE dance_id_seq RESTART WITH 1;',
+          );
           await this.dancesRepository.save(dances);
           resolve();
         },
